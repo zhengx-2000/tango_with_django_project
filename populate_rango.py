@@ -1,12 +1,10 @@
 import os
+import django
+from rango.models import Category, Page
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE',
                       'tango_with_django_project.settings')
-
-import django
-
 django.setup()
-from rango.models import Category, Page
 
 
 def populate():
@@ -69,6 +67,15 @@ def add_page(cat, title, url, views=0):
 
 def add_cat(name):
     c = Category.objects.get_or_create(name=name)[0]
+    if c.name == 'Python':
+        c.views = 128
+        c.likes = 64
+    elif c.name == 'Django':
+        c.views = 64
+        c.likes = 32
+    elif c.name == 'Other Frameworks':
+        c.views = 32
+        c.likes = 16
     c.save()
     return c
 

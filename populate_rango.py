@@ -1,4 +1,5 @@
 import os
+import numpy as np
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE',
                       'tango_with_django_project.settings')
@@ -52,7 +53,7 @@ def populate():
     for cat, cat_data in cats.items():
         c = add_cat(cat)
         for p in cat_data['pages']:
-            add_page(c, p['title'], p['url'])
+            add_page(c, p['title'], p['url'], np.random.randint(1, 128))
 
     # Print out the categories we have added.
     for c in Category.objects.all():

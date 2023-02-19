@@ -33,7 +33,7 @@ def index(request):
 def about(request):
     # prints out whether the method is a GET or a POST
     print(request.method)
-    # prints out the user name. if no one is logged in it prints 'AnonymousUser'
+    # prints out the username. if no one is logged in it prints 'AnonymousUser'
     print(request.user)
 
     # Cookie Test

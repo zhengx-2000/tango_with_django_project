@@ -22,7 +22,7 @@ def index(request):
                     'pages': page_list}
 
     visitor_cookie_handler(request)
-    context_dict['visits'] = request.session['visits']
+    # context_dict['visits'] = request.session['visits']
 
     response = render(request, 'rango/index.html', context=context_dict)
 
@@ -31,17 +31,13 @@ def index(request):
 
 
 def about(request):
-    # prints out whether the method is a GET or a POST
-    print(request.method)
-    # prints out the username. if no one is logged in it prints 'AnonymousUser'
-    print(request.user)
+    visitor_cookie_handler(request)
+    visits = request.session['visits']
+    context_dict = {'visits': visits}
 
-    # Cookie Test
-    if request.session.test_cookie_worked():
-        print("TEST COOKIE WORKED!")
-        request.session.delete_test_cookie()
+    response = render(request, 'rango/about.html', context=context_dict)
 
-    return render(request, 'rango/about.html')
+    return response
 
 
 def register(request):
@@ -264,7 +260,7 @@ def visitor_cookie_handler(request):
     # We use the COOKIES.get() function to obtain the visits' cookie.
     # If the cookie exists, the value returned is cast to an integer.
     # If the cookie doesn't exist, then the default value of 1 is used.
-    visits = int(request.COOKIES.get('visits', '1'))
+    visits = int(get_server_side_cookie(request, 'visits', '1'))
 
     last_visit_cookie = get_server_side_cookie(request, 'last_visit', str(datetime.now()))
     last_visit_time = datetime.strptime(last_visit_cookie[:-7],

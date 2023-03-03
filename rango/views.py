@@ -1,12 +1,12 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from rango.models import Category, Page
-from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
-from django.shortcuts import redirect
-from django.urls import reverse
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
 from datetime import datetime
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from django.shortcuts import render
+from django.urls import reverse
+
+from rango.forms import CategoryForm, PageForm
+from rango.models import Category, Page
 
 
 def index(request):
@@ -40,6 +40,7 @@ def about(request):
     return response
 
 
+'''
 def register(request):
     # A boolean value for telling the template
     # whether the registration wa successful.
@@ -99,6 +100,7 @@ def register(request):
                   context={'user_form': user_form,
                            'profile_form': profile_form,
                            'registered': registered})
+'''
 
 
 def show_category(request, category_name_slug):
@@ -189,6 +191,7 @@ def add_page(request, category_name_slug):
     return render(request, 'rango/add_page.html', context=context_dict)
 
 
+'''
 def user_login(request):
     # If the request is a HTTP POST, try to pull out the relevant information.
     if request.method == 'POST':
@@ -230,6 +233,7 @@ def user_login(request):
         # No context variables to pass to the template system, hence the
         # blank dictionary object...
         return render(request, 'rango/login.html')
+'''
 
 
 @login_required
@@ -238,6 +242,7 @@ def restricted(request):
     return render(request, 'rango/restricted.html')
 
 
+'''
 # Use the login_required() decorator to ensure only those logged in can
 # access the view.
 @login_required
@@ -246,6 +251,7 @@ def user_logout(request):
     logout(request)
     # Take the user back to the homepage.
     return redirect(reverse('rango:index'))
+'''
 
 
 def get_server_side_cookie(request, cookie, default_val=None):

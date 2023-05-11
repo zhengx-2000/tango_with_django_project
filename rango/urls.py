@@ -19,5 +19,4 @@ urlpatterns = [
     path('like_category/', views.LikeCategoryView.as_view(), name='like_category'),
     path('suggest/', views.CategorySuggestionView.as_view(), name='suggest'),
     path('search_add_page/', views.SearchAddPageView.as_view(), name='search_add_page'),
-
 ]

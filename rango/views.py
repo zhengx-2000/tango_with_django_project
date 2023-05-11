@@ -202,7 +202,7 @@ class ProfileView(View):
         form = UserProfileForm({'website': user_profile.website,
                                 'picture': user_profile.picture})
 
-        return (user, user_profile, form)
+        return user, user_profile, form
 
     @method_decorator(login_required)
     def get(self, request, username):
@@ -244,3 +244,72 @@ class ListProfilesView(View):
         profiles = UserProfile.objects.all()
 
         return render(request, 'rango/list_profiles.html', {'userprofile_list': profiles})
+
+
+class LikeCategoryView(View):
+    @method_decorator(login_required)
+    def get(self, request):
+        category_id = request.GET['category_id']
+
+        try:
+            category = Category.objects.get(id=int(category_id))
+        except Category.DoesNotExist:
+            return HttpResponse(-1)
+        except ValueError:
+            return HttpResponse(-1)
+
+        category.likes = category.likes + 1
+        category.save()
+
+        return HttpResponse(category.likes)
+
+
+class CategorySuggestionView(View):
+    def get(self, request):
+        if 'suggestion' in request.GET:
+            suggestion = request.GET['suggestion']
+        else:
+            suggestion = ''
+
+        category_list = get_category_list(max_results=8, starts_with=suggestion)
+
+        if len(category_list) == 0:
+            category_list = Category.objects.order_by('-likes')
+
+        return render(request, 'rango/categories.html', {'categories': category_list})
+
+
+class SearchAddPageView(View):
+    @method_decorator(login_required)
+    def get(self, request):
+        category_id = request.GET['category_id']
+        title = request.GET['title']
+        url = request.GET['url']
+
+        try:
+            category = Category.objects.get(id=int(category_id))
+        except Category.DoesNotExist:
+            return HttpResponse('Error - category not found.')
+        except ValueError:
+            return HttpResponse('Error - bad category ID.')
+
+        p = Page.objects.get_or_create(category=category,
+                                       title=title,
+                                       url=url)
+
+        pages = Page.objects.filter(category=category).order_by('-views')
+        return render(request, 'rango/page_listing.html', {'pages': pages})
+
+
+def get_category_list(max_results=0, starts_with=''):
+    category_list = []
+
+    if starts_with:
+        category_list = Category.objects.filter(name__istartswith=starts_with)
+
+    if max_results > 0:
+        if len(category_list) > max_results:
+            category_list = category_list[:max_results]
+
+    return category_list
+

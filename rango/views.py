@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from rango.models import Category, Page
 from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
 from datetime import datetime
+from rango.bing_search import run_query
 
 
 def index(request):
@@ -98,6 +99,19 @@ def add_page(request, category_name_slug):
 @login_required
 def restricted(request):
     return render(request, 'rango/restricted.html')
+
+
+def search(request):
+    result_list = []
+    query = ''
+
+    if request.method == 'POST':
+        query = request.POST['query'].strip()
+        if query:
+            # Run our Bing function to get the results list!
+            result_list = run_query(query)
+
+    return render(request, 'rango/search.html', {'result_list': result_list, 'query': query})
 
 
 def get_server_side_cookie(request, cookie, default_val=None):

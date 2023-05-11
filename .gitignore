@@ -3,4 +3,5 @@ __pycache__/
 *.pyc
 .idea/
 tests_chapter*.py
+*.key
 migrations/
